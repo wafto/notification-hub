@@ -2,9 +2,11 @@
 
 namespace App\Channels;
 
+use App\Events\NotificationCreated;
 use App\Models\Notification;
 use App\Rules\ChannelAvailable;
 use App\Rules\EventType;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use RuntimeException;
@@ -13,6 +15,7 @@ final class Dispatch
 {
     public function __construct(
         private Resolver $resolver,
+        private Dispatcher $eventbus,
     ) {}
 
     public function __invoke(array $data)
@@ -26,6 +29,10 @@ final class Dispatch
 
         $data = $this->channelsValidation($channels, $payload);
         $notifications = $this->createNotifications($eventId, $eventType, $data);
+
+        foreach ($notifications as $notification) {
+            $this->eventbus->dispatch(new NotificationCreated($notification));
+        }
     }
 
     protected function generalValidation(array $data): array
