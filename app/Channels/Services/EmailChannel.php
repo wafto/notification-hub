@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Channels;
+namespace App\Channels\Services;
 
+use App\Channels\Channel;
 use App\Rules\ChannelUserId;
 
 final class EmailChannel implements Channel

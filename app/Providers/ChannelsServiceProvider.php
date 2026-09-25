@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use App\Channels\Channel;
 use App\Channels\ChannelsResolver;
-use App\Channels\EmailChannel;
-use App\Channels\SmsChannel;
+use App\Channels\Services\EmailChannel;
+use App\Channels\Services\SmsChannel;
 use Illuminate\Support\ServiceProvider;
 
 class ChannelsServiceProvider extends ServiceProvider
