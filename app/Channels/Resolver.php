@@ -7,6 +7,9 @@ use InvalidArgumentException;
 
 class Resolver
 {
+    /**
+     * @param array<string, ?Channel> $channels
+     */
     private array $channels;
 
     /**
@@ -22,18 +25,18 @@ class Resolver
      */
     private function verifyChannels(array $channels): array
     {
-        $names = [];
+        $mapping = [];
 
         foreach ($channels as $channel) {
-            if ($names[$channel->name()] ?? false) {
+            if ($mapping[$channel->name()] ?? false) {
                 throw new InvalidArgumentException(
                     sprintf('Duplicated service name found for %s!', $channel->name())
                 );
             }
-            $names[$channel->name()] = true;
+            $mapping[$channel->name()] = $channel;
         }
 
-        return $channels;
+        return $mapping;
     }
 
     /**
@@ -42,6 +45,14 @@ class Resolver
      */
     public function channelsNames(): Collection
     {
-        return collect($this->channels)->map(fn ($ch) => $ch->name());
+        return collect(array_keys($this->channels));
+    }
+
+    /**
+     * Return channel resolution.
+     */
+    public function forChannel(string $name): ?Channel
+    {
+        return $this->channels[$name] ?? null;
     }
 }

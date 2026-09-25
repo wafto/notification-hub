@@ -22,7 +22,7 @@ class NotificationStatus extends Model
     {
         return [
             'notification_id' => 'integer',
-            //'status' => Status::class,
+            'status' => Status::class,
         ];
     }
 
