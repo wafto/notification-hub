@@ -23,6 +23,17 @@ $body = [
     ],
 ];
 
+test('endpoints on success return only the same event id and type provided in the request', function () use ($body) {
+    $response = postJson('/api/v1/notifications', $body);
+
+    $response
+        ->assertStatus(201)
+        ->assertExactJson([
+            'event_id' => $body['event_id'],
+            'event_type' => $body['event_type'],
+        ]);
+});
+
 test('endpoint should return 201 ans create two pending notifications', function () use ($body) {
     $response = postJson('/api/v1/notifications', $body);
 

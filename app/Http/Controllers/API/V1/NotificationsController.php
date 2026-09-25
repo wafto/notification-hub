@@ -13,6 +13,9 @@ class NotificationsController extends Controller
     {
         $dispatch($request->all());
 
-        return response()->json([], 201);
+        return response()->json([
+            'event_id' => $request->input('event_id'),
+            'event_type' => $request->input('event_type'),
+        ], 201);
     }
 }
