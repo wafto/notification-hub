@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Channels\Channel;
-use App\Channels\ChannelsResolver;
+use App\Channels\Resolver;
 use App\Channels\Services\EmailChannel;
 use App\Channels\Services\SmsChannel;
 use Illuminate\Support\ServiceProvider;
@@ -15,7 +15,7 @@ class ChannelsServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->when(ChannelsResolver::class)
+        $this->app->when(Resolver::class)
             ->needs(Channel::class)
             ->give([
                 EmailChannel::class,

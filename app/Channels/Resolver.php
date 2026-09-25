@@ -2,12 +2,16 @@
 
 namespace App\Channels;
 
+use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
-final class ChannelsResolver
+class Resolver
 {
     private array $channels;
 
+    /**
+     * Constructor, check the ChannelsServiceProvider for adding new services.
+     */
     public function __construct(Channel ...$channels)
     {
         $this->channels = $this->verifyChannels($channels);
@@ -30,5 +34,14 @@ final class ChannelsResolver
         }
 
         return $channels;
+    }
+
+    /**
+     * Returns the names of the available and loaded channels services.
+     * @return Collection<string>
+     */
+    public function channelsNames(): Collection
+    {
+        return collect($this->channels)->map(fn ($ch) => $ch->name());
     }
 }
