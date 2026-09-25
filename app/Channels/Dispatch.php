@@ -2,6 +2,7 @@
 
 namespace App\Channels;
 
+use App\Models\Notification;
 use App\Rules\ChannelAvailable;
 use App\Rules\EventType;
 use Illuminate\Support\Facades\Validator;
@@ -24,14 +25,14 @@ final class Dispatch
         ] = $this->generalValidation($data);
 
         $data = $this->channelsValidation($channels, $payload);
-
-        dump($data, $eventId, $eventType);
+        $notifications = $this->createNotifications($eventId, $eventType, $data);
     }
 
-    public function generalValidation(array $data): array
+    protected function generalValidation(array $data): array
     {
         return Validator::make($data, [
             'event_id' => [
+                'unique:notifications,event_id',
                 'required',
                 'string',
                 'uuid:7',
@@ -54,7 +55,7 @@ final class Dispatch
         ])->validate();
     }
 
-    public function channelsValidation(array $channels, array $payload): array
+    protected function channelsValidation(array $channels, array $payload): array
     {
         $validated = [];
         $errors = [];
@@ -87,5 +88,21 @@ final class Dispatch
         }
 
         return $validated;
+    }
+
+    protected function createNotifications(string $eventId, string $eventType, array $data): array
+    {
+        $notifications = [];
+
+        foreach ($data as $channelName => $channelPayload) {
+            $notifications[] = Notification::create([
+                'event_id' => $eventId,
+                'event_type' => $eventType,
+                'channel' => $channelName,
+                'payload' => $channelPayload,
+            ]);
+        }
+
+        return $notifications;
     }
 }

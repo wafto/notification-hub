@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Status;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\AsFluent;
 use Illuminate\Database\Eloquent\Model;
@@ -37,6 +38,15 @@ class Notification extends Model
             'channel' => 'string',
             'payload' => AsFluent::class,
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::created(function (Notification $notification) {
+            $notification->statuses()->create([
+                'status' => Status::PENDING,
+            ]);
+        });
     }
 
     public function statuses(): HasMany
