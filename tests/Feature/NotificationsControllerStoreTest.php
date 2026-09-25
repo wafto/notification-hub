@@ -8,8 +8,11 @@ test('endpoint should return 201 status code', function () {
         'event_type' => 'USER_CREATED',
         'channels' => ['email', 'sms'],
         'payload' => [
-            'user_id' => '01a0d72e-5a32-7399-9aee-a7a31520227d',
-            'message' => 'Hello world!',
+            'user_id' => '1234567',
+            'message_email' => 'Hello world on email!',
+            'email' => 'example@testing.com',
+            'message_sms' => 'Hello world on sms',
+            'phone' => '5542554444',
         ],
     ]);
 

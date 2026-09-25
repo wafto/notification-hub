@@ -5,6 +5,7 @@ namespace App\Channels;
 use App\Rules\ChannelAvailable;
 use App\Rules\EventType;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use RuntimeException;
 
 final class Dispatch
@@ -56,6 +57,7 @@ final class Dispatch
     public function channelsValidation(array $channels, array $payload): array
     {
         $validated = [];
+        $errors = [];
 
         foreach ($channels as $channel) {
             $resolution = $this->resolver->forChannel($channel);
@@ -64,8 +66,24 @@ final class Dispatch
                 throw new RuntimeException(sprintf('Unable to resolve channel %s!', $channel));
             }
 
-            $validated[$channel] = Validator::make($payload, $resolution->rules())
-                ->validateWithBag($channel);
+            $rules = $resolution->rules();
+            $keys = array_keys($rules);
+
+            $validator = Validator::make(
+                data: $payload,
+                rules: $rules,
+                attributes: array_combine($keys, $keys),
+            );
+
+            if ($validator->fails()) {
+                $errors[$channel] = $validator->errors()->messages();
+            } else {
+                $validated[$channel] = $validator->validated();
+            }
+        }
+
+        if (count($errors)) {
+            throw ValidationException::withMessages($errors);
         }
 
         return $validated;
