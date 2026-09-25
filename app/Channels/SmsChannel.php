@@ -5,7 +5,7 @@ namespace App\Channels;
 use App\Rules\ChannelUserId;
 use App\Rules\PhoneNumber;
 
-class SmsChannel implements Channel
+final class SmsChannel implements Channel
 {
     public function name(): string
     {

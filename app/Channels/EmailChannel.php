@@ -4,7 +4,7 @@ namespace App\Channels;
 
 use App\Rules\ChannelUserId;
 
-class EmailChannel implements Channel
+final class EmailChannel implements Channel
 {
     public function name(): string
     {
