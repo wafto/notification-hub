@@ -3,7 +3,6 @@
 use App\Events\NotificationCreated;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Sleep;
 
 use function Pest\Laravel\assertDatabaseCount;
