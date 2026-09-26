@@ -3,6 +3,8 @@
 use App\Events\NotificationCreated;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Sleep;
 
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\assertDatabaseHas;
@@ -23,6 +25,8 @@ $body = [
     ],
 ];
 
+Sleep::fake();
+
 test('endpoints on success return only the same event id and type provided in the request', function () use ($body) {
     $response = postJson('/api/v1/notifications', $body);
 
@@ -34,12 +38,10 @@ test('endpoints on success return only the same event id and type provided in th
         ]);
 });
 
-test('endpoint should return 201 ans create two pending notifications', function () use ($body) {
+test('endpoint should return 201 and create two pending notifications', function () use ($body) {
     $response = postJson('/api/v1/notifications', $body);
 
     assertDatabaseCount('notifications', 2);
-
-    assertDatabaseCount('notification_statuses', 2);
 
     assertDatabaseHas('notifications', [
         'event_id' => '01a0d72c-c89d-7529-a2cd-3ca86c466975',

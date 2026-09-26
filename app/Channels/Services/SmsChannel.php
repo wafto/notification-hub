@@ -39,11 +39,15 @@ final class SmsChannel implements Channel
     {
         /** Lets fake the sms send notification by making 50% success or fail and adding some sleeping time */
         $status = Arr::random([true, false]);
+
+        if (!$status) {
+            return false;
+        }
+
         $time = Arr::random([500, 1000, 1500, 2000]);
-
         Sleep::for($time)->milliseconds();
-        logger()->info('Sent SMS notification', $notification->payload);
+        logger()->info('Sent SMS notification', $notification->payload->toArray());
 
-        return $status;
+        return true;
     }
 }
