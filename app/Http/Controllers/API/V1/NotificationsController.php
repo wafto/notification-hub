@@ -33,7 +33,7 @@ class NotificationsController extends Controller
     )]
     #[BodyParameter(
         name: 'payload',
-        description: 'A list of properties needed for the channels.',
+        description: 'A list of properties needed for the channels. Those payload params depends of the required by the channel.',
         type: 'array',
         format: 'array<string, mixed>',
         example: [
