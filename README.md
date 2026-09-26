@@ -2,12 +2,12 @@
 
 Hub de notificaciones como servicio, esto para tener un lugar centralizado para canalizar notificaciones a diferentes proveedores.
 
-## Stack
+### Stack
 
 - PHP 8.5 and Laravel 13
 - MySQL, Redis
 
-## Instalación local
+### Instalación local
 
 Como requsitos minimos es necesario tener Docker y Git instalados de un inicio. Luego seguir los sigientes pasos que van desde
 clonar el repositorio a poder ejecutar las colas de mensajeria para el procesamiento en background.
@@ -38,7 +38,7 @@ docker run --rm -v "$(pwd)":/app -w /app composer install
 Visitamos el sitio [http://127.0.0.1:8080](http://127.0.0.1:8080). Para ver la documentacion del **único** endpoint para la prueba
 podemos entrar a [http://127.0.0.1:8080/docs/api#/operations/v1.notifications.store](http://127.0.0.1:8080/docs/api#/operations/v1.notifications.store) ahi podemos inclusive mandar el api request y verificar en la consola donde corre nuestro worker que consume el evento de manera async. si mandamos el mismo body sin cambiar el event_id mandara 422, esto como medida preventiva para evitar multiple eventos duplicados, el cliente es el encargado de manejar el event_id.
 
-## Correr pruebas unitarias y de integración
+### Correr pruebas unitarias y de integración
 
 Teniendo levantado el ambiente local correr en la terminal:
 
@@ -46,7 +46,7 @@ Teniendo levantado el ambiente local correr en la terminal:
 ./vendor/bin/sail artisan test
 ```
 
-## Detenener el ambiente local
+### Detenener el ambiente local
 
 Para detener el ambiente con tan solo ejecutar:
 
@@ -59,3 +59,13 @@ Si se llega a tener problemas por configuración y demás ya que este proyecto e
 ```bash
 ./vendor/bin/sail down -v
 ```
+
+## Agregar un nuevo canal de notificación
+
+El objetivo principal es tener un código desacoplado y listo para cambios futuros, por ende un requerimiento importante es poder agregar nuevos canales de notificación, los pasos para agregar uno nuevo son los siguentes:
+
+1. En `app/Channels/Services` creamos una nueva clase por ejemplo de nombre `TelegramChannel.php`.
+2. La clase `TelegramChannel` debe implementar la interfaz `app/Channels/Channel.php`.
+3. Implementar los 3 metodos necesarios, si se necesita injectar un servicio externo en el constructor agragarlos.
+4. Agregar la nueva implementación en `app/Providers/ChannelsServiceProvider.php`, este indica cuales channels estan disponibles para el resolver.
+5. Probar que todo funcione, tener un nombre duplicado o no definir bien las reglas puede que termine en excepción o error de validación.
