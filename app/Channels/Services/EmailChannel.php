@@ -3,6 +3,7 @@
 namespace App\Channels\Services;
 
 use App\Channels\Channel;
+use App\Models\Notification;
 use App\Rules\ChannelUserId;
 
 final class EmailChannel implements Channel
@@ -29,5 +30,10 @@ final class EmailChannel implements Channel
                 'email',
             ],
         ];
+    }
+
+    public function send(Notification $notification): bool
+    {
+        return false;
     }
 }

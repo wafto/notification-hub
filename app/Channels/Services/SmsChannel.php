@@ -3,6 +3,7 @@
 namespace App\Channels\Services;
 
 use App\Channels\Channel;
+use App\Models\Notification;
 use App\Rules\ChannelUserId;
 use App\Rules\PhoneNumber;
 
@@ -30,5 +31,10 @@ final class SmsChannel implements Channel
                 new PhoneNumber,
             ],
         ];
+    }
+
+    public function send(Notification $notification): bool
+    {
+        return false;
     }
 }

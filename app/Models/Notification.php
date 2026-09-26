@@ -43,14 +43,17 @@ class Notification extends Model
     protected static function booted(): void
     {
         static::created(function (Notification $notification) {
-            $notification->statuses()->create([
-                'status' => Status::PENDING,
-            ]);
+            $notification->addStatus(Status::PENDING);
         });
     }
 
     public function statuses(): HasMany
     {
         return $this->hasMany(NotificationStatus::class);
+    }
+
+    public function addStatus(Status $status): void
+    {
+        $this->statuses()->create(['status' => $status]);
     }
 }
