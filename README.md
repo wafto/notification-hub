@@ -66,6 +66,6 @@ El objetivo principal es tener un código desacoplado y listo para cambios futur
 
 1. En `app/Channels/Services` creamos una nueva clase por ejemplo de nombre `TelegramChannel.php`.
 2. La clase `TelegramChannel` debe implementar la interfaz `app/Channels/Channel.php`.
-3. Implementar los 3 metodos necesarios, si se necesita injectar un servicio externo en el constructor agragarlos.
+3. Implementar los 3 metodos necesarios, si se necesita injectar un servicio externo en el constructor agragarlos (usar las actuales como ejemplo).
 4. Agregar la nueva implementación en `app/Providers/ChannelsServiceProvider.php`, este indica cuales channels estan disponibles para el resolver.
 5. Probar que todo funcione, tener un nombre duplicado o no definir bien las reglas puede que termine en excepción o error de validación.

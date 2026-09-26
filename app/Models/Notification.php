@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\AsFluent;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable([
     'event_id',
@@ -50,6 +51,11 @@ class Notification extends Model
     public function statuses(): HasMany
     {
         return $this->hasMany(NotificationStatus::class);
+    }
+
+    public function status(): HasOne
+    {
+        return $this->hasOne(NotificationStatus::class)->latestOfMany();
     }
 
     public function addStatus(Status $status): void
