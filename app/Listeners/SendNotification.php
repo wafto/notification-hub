@@ -59,9 +59,9 @@ class SendNotification implements ShouldBeUnique, ShouldQueue
             report: fn () => true,
         );
 
-        $notification->addStatus($sent ? Status::DELIVERED : Status::FAILED);
-
-        if (!$sent) {
+        if ($sent) {
+            $notification->addStatus(Status::DELIVERED);
+        } else {
             $this->fail(new RuntimeException(sprintf('Unable to send notification with id', $notification->id)));
         }
     }
