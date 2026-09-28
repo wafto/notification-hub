@@ -5,12 +5,16 @@ namespace App\Listeners;
 use App\Channels\Resolver;
 use App\Enums\Status;
 use App\Events\NotificationCreated;
-use DateTimeInterface;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\Attributes\Timeout;
+use Illuminate\Queue\Attributes\Tries;
 use Illuminate\Queue\InteractsWithQueue;
 use RuntimeException;
+use Throwable;
 
+#[Tries(5)]
+#[Timeout(120)]
 class SendNotification implements ShouldBeUnique, ShouldQueue
 {
     use InteractsWithQueue;
@@ -31,9 +35,9 @@ class SendNotification implements ShouldBeUnique, ShouldQueue
         );
     }
 
-    public function retryUntil(): DateTimeInterface
+    public function backoff(NotificationCreated $event): array
     {
-        return now()->plus(minutes: 1);
+        return [1, 2, 5, 10];
     }
 
     public function handle(NotificationCreated $event): void
@@ -56,6 +60,15 @@ class SendNotification implements ShouldBeUnique, ShouldQueue
         );
 
         $notification->addStatus($sent ? Status::DELIVERED : Status::FAILED);
+
+        if (!$sent) {
+            $this->fail(new RuntimeException(sprintf('Unable to send notification with id', $notification->id)));
+        }
+    }
+
+    public function failed(NotificationCreated $event, Throwable $exception): void
+    {
+        $event->notification->addStatus(Status::FAILED);
     }
 }
 
